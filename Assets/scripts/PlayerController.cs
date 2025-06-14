@@ -23,43 +23,37 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+   
     void Update()
     {
-        if (health.isDead) return;
-
         float moveInput = Input.GetAxis("Horizontal");
 
-        if(moveInput >= 0)
-        {
-            spriteRenderer.flipX = false;
-        }else if (moveInput < 0)
-        {
-            spriteRenderer.flipX = true;
-        }
-
-        if (moveInput != 0)
-        {
-            anim.SetBool("IsRun", true);
-        }
-        else
+        if (health.isDead)
         {
             anim.SetBool("IsRun", false);
-        }
-        //Debug.Log($"Input value: {moveInput}");
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
-        }
-        else
-        {
-            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+            anim.SetBool("IsJumping", false);
+            return;
         }
 
+        if (!health.canMove) return;
+
+        if (moveInput >= 0)
+            spriteRenderer.flipX = false;
+        else if (moveInput < 0)
+            spriteRenderer.flipX = true;
+
+        anim.SetBool("IsRun", moveInput != 0);
+
+        if (Input.GetKey(KeyCode.LeftShift))
+            rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+        else
+            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
         if (Input.GetKeyDown(KeyCode.Space) && groundChecker.isGrounded)
-        {
-            //rb.AddForce(new Vector2(0,jumpForce));
             rb.AddForce(Vector2.up * jumpForce);
-        }
+
+        anim.SetBool("IsJumping", !groundChecker.isGrounded);
     }
+
 
 }

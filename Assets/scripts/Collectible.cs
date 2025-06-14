@@ -1,20 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.gameObject.CompareTag("Player"))
-        {
-            return;
-        }
-        //TODO send info to player
-        Inventory playerInventory = null;
-        playerInventory = collision.gameObject.GetComponent<Inventory>();
+        if (!collision.CompareTag("Player")) return;
 
-        //playerInventory.
+        Inventory playerInventory = collision.GetComponent<Inventory>();
+        if (playerInventory != null)
+        {
+            playerInventory.AddMushroom();
+        }
 
         Destroy(gameObject);
     }
